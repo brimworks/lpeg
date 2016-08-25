@@ -5,7 +5,7 @@
 
 #include <limits.h>
 #include <string.h>
-#include <stdlib.h>
+
 
 #include "lua.h"
 #include "lauxlib.h"
@@ -146,15 +146,18 @@ static int removedyncap (lua_State *L, Capture *capture,
 */
 const char *match (lua_State *L, const char *o, const char *s, const char *e,
                    Instruction *op, Capture *capture, int ptop) {
-  Stack *stackbase = malloc(sizeof(Stack) * INITBACK);
-  Stack *stacklimit = stackbase + INITBACK;
-  Stack *stack = stackbase;  /* point to first empty slot in stack */
+  Stack *stackbase;
+  Stack *stacklimit;
+  Stack *stack;  /* point to first empty slot in stack */
   int capsize = INITCAPSIZE;
   int captop = 0;  /* point to first empty slot in captures */
   int ndyncap = 0;  /* number of dynamic captures (in Lua stack) */
   const Instruction *p = op;  /* current instruction */
+
+  stackbase = (Stack*)lua_newuserdata(L, sizeof(Stack) * INITBACK);
+  stacklimit = stackbase + INITBACK;
+  stack = stackbase;
   stack->p = &giveup; stack->s = s; stack->caplevel = 0; stack++;
-  lua_pushlightuserdata(L, stackbase);
   for (;;) {
 #if defined(DEBUG)
       printf("s: |%s| stck:%d, dyncaps:%d, caps:%d  ",

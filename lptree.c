@@ -1141,7 +1141,7 @@ static size_t initposition (lua_State *L, size_t len) {
 ** Main match function
 */
 static int lp_match (lua_State *L) {
-  Capture *capture = malloc(sizeof(Capture) * INITCAPSIZE);
+  Capture *capture;
   const char *r;
   size_t l;
   Pattern *p = (getpatt(L, 1, NULL), getpattern(L, 1));
@@ -1150,16 +1150,16 @@ static int lp_match (lua_State *L) {
   size_t i = initposition(L, l);
   int ptop = lua_gettop(L);
   lua_pushnil(L);  /* initialize subscache */
-  lua_pushlightuserdata(L, capture);  /* initialize caplistidx */
+
+  /* initialize caplistidx */
+  capture = (Capture*)lua_newuserdata(L, sizeof(Capture) * INITCAPSIZE);
   lua_getfenv(L, 1);  /* initialize penvidx */
   r = match(L, s, s + i, s + l, code, capture, ptop);
   if (r == NULL) {
-    free(capture);
     lua_pushnil(L);
     return 1;
   }
   int n = getcaptures(L, s, r, ptop);
-  free(capture);
   return n;
 }
 
