@@ -1159,8 +1159,7 @@ static int lp_match (lua_State *L) {
     lua_pushnil(L);
     return 1;
   }
-  int n = getcaptures(L, s, r, ptop);
-  return n;
+  return getcaptures(L, s, r, ptop);
 }
 
 

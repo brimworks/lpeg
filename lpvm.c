@@ -171,12 +171,10 @@ const char *match (lua_State *L, const char *o, const char *s, const char *e,
         assert(stack == getstackbase(L, ptop) + 1);
         capture[captop].kind = Cclose;
         capture[captop].s = NULL;
-	free(stackbase);
         return s;
       }
       case IGiveup: {
         assert(stack == getstackbase(L, ptop));
-	free(stackbase);
         return NULL;
       }
       case IRet: {
@@ -350,7 +348,7 @@ const char *match (lua_State *L, const char *o, const char *s, const char *e,
         p++;
         continue;
       }
-    default: assert(0); free(stackbase); return NULL;
+      default: assert(0); return NULL;
     }
   }
 }
